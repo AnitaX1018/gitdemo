@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>01057103-Exersice9-1</title>
+    <style type="text/css">
+        div.nav {
+            border: 1px solid skyBlue;
+            margin-left: 3px;
+            padding: 3px;
+            float: left;
+        }
+
+        input, p, li {
+            font-family: Helvetica,
+                "Microsoft YaHei", "LiHei Pro", TW-Kai;
+        }
+
+        li {
+            font-size: 12px;
+        }
+
+        img.picture {
+            position: absolute;
+        }
+    </style>
+    <script type="text/javascript">
+        var pinphoto=new Array('blue', 'red', 'yellow');
+        var currentz = 1;
+		var i = 0;
+        function load(){
+            var length = localStorage.length;
+			for(var x = length-1; x>=0; --x){
+				var key = localStorage.key(x);
+				var check = key.startsWith("img");
+				//console.log(check);
+				if(check)
+				{	
+					array=localStorage.getItem(key).split(',');
+					currentz++;
+            		i++;
+					var newnode = document.createElement("img");
+					newnode.setAttribute("src",array[0]);
+					newnode.setAttribute("id",key);
+					newnode.setAttribute(array[1],array[2]);
+					newnode.setAttribute(array[3],array[4]);
+					document.body.appendChild(newnode);
+                }
+			}
+            for(var x = length-1; x>=0; --x){
+				var key = localStorage.key(x);
+				var check = key.startsWith("pin");
+				//console.log(check);
+				if(check)
+				{	
+					array=localStorage.getItem(key).split(',');
+					var newnode = document.createElement("img");
+					newnode.setAttribute("src",array[0]);
+					newnode.setAttribute("id",key);
+					newnode.setAttribute(array[1],array[2]);
+					newnode.setAttribute(array[3],array[4]);
+                    newnode.setAttribute("width","30px");
+					document.body.appendChild(newnode);
+                }
+			}
+        }
+
+        function save(){
+            var image = document.getElementById("pic").value;
+            //限制
+			if(document.getElementById("x").value < 40 || document.getElementById("x").value > 600)
+			{
+				window.alert("40<=X座標<=600");
+				document.getElementById("x").value=40;
+				return;
+			}
+			if(document.getElementById("y").value < 40 || document.getElementById("y").value > 400)
+			{
+				window.alert("40<=Y座標<=400");
+				document.getElementById("y").value=40;
+				return;
+			}
+            currentz++;
+            i++;
+			var x = document.getElementById("x").value;
+			var y = document.getElementById("y").value;
+            if(image < 10) image = '0'+image;
+            //props
+            var newprops = document.createElement("img");
+            newprops.setAttribute("src",""+image+".png");
+            newprops.setAttribute("id","img-"+i);
+            newprops.setAttribute("class","picture");
+            newprops.setAttribute("style","left:"+x+"px;"+"top:"+y+"px;"+"z-index:"+currentz+";");
+            document.body.appendChild(newprops);
+            localStorage.setItem("img-"+i+"",image+".png,class,picture,style,left:"+x+"px;"+"top:"+y+"px;"+"z-index:"+currentz+";");
+            //pin
+            var newpin=document.createElement("img");
+            var pin=pinphoto[Math.floor(Math.random()*pinphoto.length)];
+            newpin.setAttribute("src",""+pin+".png");
+            newpin.setAttribute("id","pin-"+i);
+            newpin.setAttribute("class","picture");
+            x=parseInt(x)+85
+            y=parseInt(y)-10
+            newpin.setAttribute("style","left:"+x+"px;"+"top:"+y+"px;"+"z-index:"+currentz+";");
+            newpin.setAttribute("width","30px");
+            document.body.appendChild(newpin);
+            localStorage.setItem("pin-"+i+"",pin+".png,class,picture,style,left:"+x+"px;"+"top:"+y+"px;"+"z-index:"+currentz+";");
+        }
+
+        function remove(){
+            //console.log(i)
+            for(i; i > 0 ;--i)
+			{	
+				var removeItem = document.getElementById("img-"+i+"");
+                console.log(removeItem.getAttribute("id"));
+                var removepin=document.getElementById("pin-"+i+"");
+                console.log(removepin.getAttribute("id"));
+                document.body.removeChild(removepin);
+				document.body.removeChild(removeItem);
+			}
+			//i = 0;//reset
+			currentz = 1;
+			var length = localStorage.length;
+			for(var x = length-1; x>=0; x--){
+				var key = localStorage.key(x);
+				if(key.startsWith("img")||key.startsWith("pin"))
+				{
+                  localStorage.removeItem(key);
+                }
+			}
+           
+        }
+
+        function start(){
+            load();
+            var addbutton=document.getElementById("addButton");
+            var removebotton=document.getElementById("removeAllButton");
+            addbutton.addEventListener("click",save,false);
+            removebotton.addEventListener("click",remove,false);
+        }
+        window.addEventListener("load",start,false);
+    </script>
+</head>
+
+<body>
+    <img src="blackboard.jpg" height="600" width="800" style="float:left; z-index:0;" />
+    <img id="img-0" class="picture" style="top: 50px; left: 50px; z-index:1;" src="doraemon.png" />
+    <img id="pin-0" class="picture" style="top: 40px; left: 135px; z-index:1;" width="30px" src="red.png" />
+
+    <div id="nav" class="nav">
+        <form action="#">
+            <p>
+                <label>要放哪個道具圖片(請輸入編號):
+                    <input type="number" id="pic" min="1" max="10" step="1" value="1" />
+                </label>
+                <br />
+                <label>圖片X座標:
+                    <input type="number" id="x" min="40" max="600" step="1" value="40" />
+                </label>
+                <br />
+                <label>圖片Y座標:
+                    <input type="number" id="y" min="40" max="400" step="1" value="100" />
+                </label>
+            </p>
+            <p>
+                <input type="button" value="新增圖片" id="addButton">
+                <input type="button" value="移除所有圖片" id="removeAllButton">
+            </p>
+        </form>
+        <ul>
+            <li>[01]任意門</li>
+            <li>[02]時光機</li>
+            <li>[03]竹蜻蜓</li>
+            <li>[04]時光布</li>
+            <li>[05]記憶麵包</li>
+            <li>[06]縮小燈</li>
+            <li>[07]翻譯蒟蒻</li>
+            <li>[08]如果電話亭</li>
+            <li>[09]穿透環</li>
+            <li>[10]更衣照相機</li>
+        </ul>
+    </div>
+</body>
+
+</html>
